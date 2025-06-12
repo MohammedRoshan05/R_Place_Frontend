@@ -1,0 +1,90 @@
+import axios from 'axios';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
+import { useAuthContext } from '../context';
+
+const instance = axios.create({
+  baseURL: 'http://localhost:3000',
+  timeout: 1000,
+  headers: {'X-Custom-Header': 'foobar'}
+});
+
+type loginReq = {
+    Email: string,
+    Password: string
+};
+
+export default function Login(){
+    const navigate = useNavigate()
+    const { credentials, setCredentials } = useAuthContext();
+
+
+    const handleLogin = async () => {
+        var req : loginReq = {
+            Email : credentials.Email ,
+            Password : credentials.Password
+        }
+        instance.post('/login',req)
+        .then((response) => {
+            console.log(response.headers['Authorization'])
+            var jwt:string = response.headers['Authorization']
+            localStorage.setItem('jwtToken', jwt);
+
+            navigate('/game')
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    }
+
+
+    return(
+        <div className='bg-[#DDCA75] h-screen w-screen flex flex-col justify-around items-center '>
+            <div className='flex flex-row justify-center items-center'>
+                <img src='Logo.png' className='h-[50%] mx-[10%] '/>
+                <h1 className=' h-auto text-[8.125rem] text-[#DE5131] w-auto font-figma  px-[50px] rounded-2xl '> R/Place</h1>
+            </div>
+
+            <div className='bg-white h-[50%] w-full flex items-center justify-center '>
+                <div className='h-full w-[50%] flex flex-col justify-center items-center'>
+                    <label 
+                        className='bg-[#000000] text-center h-auto text-[3.125rem] text-[#DE5131] text-3xl font-figma w-[60%] p-4 m-4 rounded-xl outline-none'> 
+                        Username  
+                    </label>
+                    <label 
+                        className='bg-[#000000] h-auto text-center text-[3.125rem] text-[#DE5131] text-3xl font-figma w-[60%] p-4 m-4 rounded-xl outline-none'> 
+                        Password 
+                    </label>
+                </div>
+                <div className='h-full w-[50%] flex flex-col justify-center items-center'>
+                    <input
+                        type='text'
+                        value={credentials.Email}
+                        placeholder='email'
+                        onChange={(e) => {setCredentials({
+                            Email : e.target.value,
+                            Password: credentials.Password
+                        })}}
+                        className='bg-[#000000] text-center h-auto text-[3.125rem] text-[#DE5131] text-3xl font-figma w-[60%] p-4 m-4 rounded-xl outline-none'
+                    />
+                    <input
+                        type='password'
+                        value={credentials.Password}
+                        onChange={(e) => {setCredentials({
+                            Email : credentials.Email,
+                            Password: e.target.value
+                        })}}
+                        placeholder='Password'
+                        className='bg-[#000000] text-center h-auto text-[3.125rem] text-[#DE5131] text-3xl font-figma w-[60%] p-4 m-4 rounded-xl outline-none'  
+                    />
+                </div>
+            </div>
+            <button 
+                className='bg-[#000000] text-center h-auto text-[3.125rem] text-[#DE5131] text-3xl font-figma w-[10%] p-4 m-4 rounded-xl outline-none'
+                onClick={() => handleLogin()}
+                >
+                Login
+            </button>
+        </div>
+    )
+}

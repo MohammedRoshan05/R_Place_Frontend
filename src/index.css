@@ -1,0 +1,11 @@
+@import "tailwindcss"; 
+
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
+
+:root {
+  --font-figma: 'Jersey 10', sans-serif;
+}
+
+.font-figma {
+  font-family: var(--font-figma);
+}
