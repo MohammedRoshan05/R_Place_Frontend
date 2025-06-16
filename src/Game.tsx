@@ -6,14 +6,14 @@ import { useTileSocket } from './API/Websocket';
 type Cell = [number,string]
 
 export interface TileUpdate {
-  tile_no: number;            // 1–100
-  update_time: string;        // ISO timestamp
+  tile_no: number;           
+  update_time: string;        
   username: string;
   colour: string;
 }   
 
 export interface TileReq{
-    tile_no: number;            // 1–100
+    tile_no: number;            
     colour: string;
 }
 
@@ -30,7 +30,6 @@ export default function Game(): JSX.Element {
     const { lastMessage, readyState,sendJsonMessage } = useTileSocket();
     console.log("WebSocket status:", readyState);
 
-    // 3) Patch in updates
     useEffect(() => {
         if (!lastMessage) return;
 
